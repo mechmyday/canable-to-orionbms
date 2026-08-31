@@ -1,0 +1,46 @@
+From d475866ebeef7de252c7d1df60a32676b9429c94 Mon Sep 17 00:00:00 2001
+From: patch <patch@local>
+Date: Sun, 30 Aug 2026 19:49:52 -0700
+Subject: [PATCH] slcan: reply to V command in CANdapter-compatible format
+
+canable-fw's stock reply to the slcan 'V' (version query) command is a
+git-describe string (e.g. '9fddea4 github.com/normaldotcom/canable-fw.git').
+Ewert Energy Systems' Orion BMS Utility (BMSApp), and likely other software
+written against the commercial CANdapter's Lawicel-style protocol, only
+recognizes a device as a CANdapter if its reply to 'V' matches a
+'V<6 digits>' format. Since the reply doesn't match, such a board never
+appears in BMSApp's port-scan dropdown even though every other part of its
+slcan implementation is already fully compatible.
+
+Confirmed against a real Orion BMS 2 (firmware 3.2.3-40) and a real
+orionutility/BMSApp.jar session: replying 'V010203\r' gets the device
+listed and selected as '(CANdapter)', and the full connect/identification/
+live-data session works with no other firmware changes.
+---
+ src/slcan.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/src/slcan.c b/src/slcan.c
+index 3681e2b..f0a4451 100644
+--- a/src/slcan.c
++++ b/src/slcan.c
+@@ -159,8 +159,14 @@ int8_t slcan_parse_str(uint8_t *buf, uint8_t len)
+ 
+ 		case 'V':
+ 		{
+-			// Report firmware version and remote
+-			char* fw_id = GIT_VERSION " " GIT_REMOTE "\r";
++			// Report firmware version in Lawicel/CANdapter-compatible
++			// "V<6 digits>\r" form (major/minor/patch, 2 digits each) --
++			// confirmed against a real orionutility/BMSApp.jar (Orion BMS
++			// utility) session that this exact reply gets the device
++			// recognized as a CANdapter in its port-scan; the previous
++			// GIT_VERSION/GIT_REMOTE reply does not match what its scanner
++			// expects, so the device never appeared in its adapter list.
++			char* fw_id = "V010203\r";
+ 			CDC_Transmit_FS((uint8_t*)fw_id, strlen(fw_id));
+ 			return 0;
+ 		}
+-- 
+2.43.0
+
