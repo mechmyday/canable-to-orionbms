@@ -28,7 +28,7 @@ for the exact one-function fix.
   ```
 - A CANable-family board running `canable-fw`. Tested with:
   - The official [canable.io](https://canable.io/) USB-to-CAN board.
-  - The [Fysetc UCAN](https://wiki.fysetc.com/docs/UCAN).
+  - The [Fysetc UCAN](https://wiki.fysetc.com/docs/UCAN). I used this particular board in my tests.
 
   Other STM32F042-based CANable-compatible boards running `canable-fw`
   should work the same way.
@@ -108,7 +108,7 @@ patch changes eight lines in one function.
 
 **USE THIS REPOSITORY ENTIRELY AT YOUR OWN RISK.** Flashing third-party
 firmware onto your adapter and connecting it to a battery management
-system carries real risk. **THE AUTHOR OF THIS REPOSITORY IS NOT
+system could be risky. **THE AUTHOR OF THIS REPOSITORY IS NOT
 RESPONSIBLE FOR ANY DAMAGE TO YOUR ADAPTER, YOUR BMS, YOUR VEHICLE, OR
 ANYTHING ELSE, INCLUDING A BRICKED ADAPTER OR A BRICKED OR DAMAGED BMS,
 RESULTING FROM USE OF THIS PATCH, FIRMWARE, OR THE INSTRUCTIONS IN THIS
