@@ -130,6 +130,7 @@ transport and USB implementation belongs to that project's authors — this
 patch changes eight lines in one function.
 
 ## Disclaimer
+**THIS SOFTWARE WAS WRITTEN WITH ASSISTANCE FROM AN LLM** Here be dragons, proceed carefully.
 
 **USE THIS REPOSITORY ENTIRELY AT YOUR OWN RISK.** Flashing third-party
 firmware onto your adapter and connecting it to a battery management
