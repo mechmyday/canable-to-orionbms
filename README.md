@@ -21,17 +21,14 @@ for the exact one-function fix.
 
 ## Tools needed
 
-- A Linux computer.
-- [`dfu-util`](http://dfu-util.sourceforge.net/), for flashing over USB:
-  ```
-  sudo apt install dfu-util
-  ```
 - A CANable-family board running `canable-fw`. Tested with:
   - The official [canable.io](https://canable.io/) USB-to-CAN board.
   - The [Fysetc UCAN](https://wiki.fysetc.com/docs/UCAN).
 
   Other STM32F042-based CANable-compatible boards running `canable-fw`
   should work the same way.
+- [`dfu-util`](http://dfu-util.sourceforge.net/), for flashing over USB —
+  see the Linux or Windows steps below for how to get it.
 
 ## How to use it
 
@@ -41,12 +38,40 @@ for the exact one-function fix.
    from this repo.
 2. Put your board into its DFU bootloader: set the BOOT jumper (or hold the
    boot button on a CANable Pro) and plug it in via USB.
-3. Flash it with `dfu-util`:
+3. Flash it with `dfu-util`.
+
+   **On Linux:**
    ```
+   sudo apt install dfu-util
    dfu-util -d 0483:df11 -c 1 -i 0 -a 0 -s 0x08000000:leave -D canable-orionbms-candapter.bin
    ```
+   Drop the `sudo` on the flash command itself if your distro's udev rules
+   already grant your user access to the device; otherwise run it with
+   `sudo` too.
+
+   **On Windows:**
+   1. While the board is in DFU mode, Windows will enumerate it as an
+      unknown/"STM32 BOOTLOADER" device — `dfu-util` can't talk to it
+      through the default driver. Install
+      [Zadig](https://zadig.akeo.ie/), run it, open **Options > List All
+      Devices**, select **STM32 BOOTLOADER** from the device dropdown, set
+      the target driver to **WinUSB**, and click **Replace Driver**. (This
+      only needs to be done once per computer.)
+   2. Get `dfu-util` for Windows: grab a build from the
+      [official releases page](http://dfu-util.sourceforge.net/releases/),
+      or install it with a package manager if you have one, e.g.
+      [Chocolatey](https://community.chocolatey.org/packages/dfu-util):
+      ```
+      choco install dfu-util
+      ```
+   3. Open Command Prompt or PowerShell in the folder containing
+      `dfu-util.exe` and the downloaded `.bin` file, and run:
+      ```
+      dfu-util -d 0483:df11 -c 1 -i 0 -a 0 -s 0x08000000:leave -D canable-orionbms-candapter.bin
+      ```
 4. Move the BOOT jumper back (or release the boot button) and unplug/replug
-   the board. It should re-enumerate as a normal CDC-ACM serial port.
+   the board. It should re-enumerate as a normal CDC-ACM serial port (shows
+   up as a new COM port on Windows, `/dev/ttyACM0`-style on Linux).
 
 ### Option B: build it yourself
 
